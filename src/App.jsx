@@ -14,21 +14,6 @@ function App() {
   // State for error messages
   const [error, setError] = useState("");
 
-  // Helper function to validate input
-  const validateInputs = () => {
-    if (numA === "" || numB === "") {
-      setError("Please enter both numbers");
-      return false;
-    }
-    const a = parseFloat(numA);
-    const b = parseFloat(numB);
-    if (isNaN(a) || isNaN(b)) {
-      setError("Please enter valid numbers");
-      return false;
-    }
-    return { a, b };
-  };
-
   // 1) Addition routine
   function add(a, b) {
     return a + b;
@@ -44,12 +29,52 @@ function App() {
     return a * b;
   }
 
-  // 4) Division routine (with zero check)
+  // 4) Division routine
   function divide(a, b) {
     return a / b;
   }
 
-  // Expression evaluation routine:
+  // Helper functions to validate input
+  const validateInputs = () => {
+    if (numA === "" || numB === "") {
+      setError("Please enter both numbers");
+      return false;
+    }
+    const a = parseFloat(numA);
+    const b = parseFloat(numB);
+    if (isNaN(a) || isNaN(b)) {
+      setError("Please enter valid numbers");
+      return false;
+    }
+    return { a, b };
+  };
+
+  const validateSingleInput = (numA) => {
+    if (numA === "") {
+      this.setState({ error: "Please enter a number" });
+      return false;
+    }
+
+    const num = parseFloat(numA);
+    if (isNaN(num)) {
+      this.setState({ error: "Please enter a valid number" });
+      return false;
+    }
+
+    return num;
+  };
+
+  // Clear all results and errors
+  const clearAll = () => {
+    setNumA("");
+    setNumB("");
+    setArithmeticResult(null);
+    setSumSquareResult(null);
+    setEvenOddResult(null);
+    setError("");
+  };
+
+  // a)Expression evaluation routine:
   // Result = (a+b)/(a-b) * (a+b)
 
   const calculateArithmetic = () => {
@@ -79,10 +104,8 @@ function App() {
   // b) MoD_Sum_square: Sum of squares of digits
   const calculateSumOfSquares = () => {
     setError("");
-    if (numA === "") {
-      setError("Please enter a number");
-      return;
-    }
+    const validation = validateSingleInput();
+    if (!validation) return;
 
     const a = parseFloat(numA);
     if (isNaN(a)) {
@@ -90,7 +113,6 @@ function App() {
       return;
     }
 
-    // Take absolute value and convert to string to process digits
     const numStr = Math.abs(Math.round(a)).toString();
     let sum = 0;
 
@@ -107,10 +129,8 @@ function App() {
   // c) Even_ODD: Check if number is even or odd
   const checkEvenOdd = () => {
     setError("");
-    if (numA === "") {
-      setError("Please enter a number");
-      return;
-    }
+    const validation = validateSingleInput();
+    if (!validation) return;
 
     const a = parseFloat(numA);
     if (isNaN(a)) {
@@ -127,16 +147,6 @@ function App() {
     setEvenOddResult(isEven ? "Even" : "Odd");
     setArithmeticResult(null);
     setSumSquareResult(null);
-  };
-
-  // Clear all results and errors
-  const clearAll = () => {
-    setNumA("");
-    setNumB("");
-    setArithmeticResult(null);
-    setSumSquareResult(null);
-    setEvenOddResult(null);
-    setError("");
   };
 
   return (
